@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  order-manager:
+    build: ./order-manager/
+    container_name: order-manager
+    ports:
+        - 5000:5000
+    networks:
+        - trading-system
+  algo-data:
+    build: ./algo-data/
+    container_name: algo-data
+    networks:
+        - trading-system
+  redis-db:
+    image: redis:latest
+    container_name: trading-system-redis
+    ports:
+      - 6379:6379
+    networks:
+        - trading-system
+
+networks:
+  trading-system:
+    driver: bridge
