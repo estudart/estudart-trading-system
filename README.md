@@ -1,6 +1,6 @@
 # Trading System
 
-Welcome to the Trading System Repository! This repository is to the development of a robust trading system, leveraging low latency strategies.
+Welcome to the Trading System Repository! This repository focus on the development of a robust trading system, leveraging low latency strategies.
 
 ## Description
 
@@ -19,7 +19,7 @@ This architecture ensures high resilience, scalability, and flexibility for both
 
 ## Architecture
 
-![Service's Architecture](https://github.com/estudart/estudart-trading-system/blob/main/docs/trading-diagram.png)
+![Service's Architecture](https://github.com/estudart/estudart-trading-system/blob/main/docs/trading-diagram.jpeg)
 
 ## Api Docs
 
