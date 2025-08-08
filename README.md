@@ -41,6 +41,49 @@ To run the StreetFighters app locally, follow these steps:
     ```bash
     git clone https://github.com/estudart/estudart-trading-system
 
+2. Setup the .env file for each service:
+    ```bash
+    ENV=DEV
+
+    # DEV KEYS
+
+    # ORDER SERVICE CLIENT
+    ORDER_SERVICE_URL_DEV=http://localhost:5000/api/v1
+
+    # BINANCE
+    BINANCE_API_KEY_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    BINANCE_API_SECRET_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    BINANCE_ENDPOINT_DEV=https://testnet.binance.vision/api
+
+    BINANCE_UI=https://testnet.binancefuture.com/en-IN/futures/BTCUSDT
+    BINANCE_FUTURES_API_KEY_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    BINANCE_FUTURES_API_SECRET_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    BINANCE_FUTURES_ENDPOINT_DEV=https://testnet.binancefuture.com/fapi
+
+    BINANCE_MD_ENDPOINT_DEV=https://api.binance.com/api/v3/ticker
+
+    # COINBASE
+    COINBASE_DOLLAR_ENDPOINT_DEV=https://api.coinbase.com/v2
+
+    # FLOWA
+    FLOWA_API_SECRET_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    FLOWA_CLIENT_ID_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    FLOWA_ENDPOINT_DEV=https://mtbserver-staging.americastg.com.br:51511/api
+    FLOWA_TOKEN_ENDPOINT_DEV=https://mtbserver-Staging.americastg.com.br:51525/connect/token
+    FLOWA_USERNAME_DEV=xxxxxxxxxxxxxxxxxxxxxxxxx
+    FLOWA_PASSWORD_DEV=xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+    # HASHDEX
+    HASHDEX_MD_ENDPOINT_DEV=https://api2.hashdex.io/marketdata/v2
+
+    # REDIS
+    REDIS_HOST_DEV=redis-db
+    REDIS_PORT_DEV=6379
+
+3. Build and run all services:
+    ```bash
+    docker-compose up --build
+
 ## Usage
 
 - **OrderService**: Send manual orders to be executed immediately.
