@@ -1,2 +1,2 @@
-from .binance import BinanceMDAdapter
+from .binance import BinanceMDAdapter, BinanceCoinMWebsocketAdapter
 from .coinbase import CoinbaseDollarAdapter

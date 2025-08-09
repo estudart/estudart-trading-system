@@ -1,1 +1,2 @@
 from .binance_md_adapter import BinanceMDAdapter
+from .binance_futures_md_adapter import BinanceCoinMWebsocketAdapter
