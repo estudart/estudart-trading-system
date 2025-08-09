@@ -4,7 +4,7 @@ import websocket
 
 
 
-class TradeReporter(ABC):
+class WebsocketAdapter(ABC):
     @abstractmethod
     def get_ws(self) -> websocket.WebSocketApp:
         pass

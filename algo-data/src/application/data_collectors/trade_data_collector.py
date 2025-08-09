@@ -2,7 +2,7 @@ import time
 import logging
 
 from src.application.data_collectors.data_collector import DataCollector
-from src.infrastructure.adapters.trade_reporter_adapter import TradeReporter
+from src.infrastructure.adapters.websocket_adapter import WebsocketAdapter
 from src.infrastructure.adapters.queue.redis_adapter import RedisAdapter
 
 
@@ -10,7 +10,7 @@ class TradeDataCollector(DataCollector):
     def __init__(
         self,
         logger: logging.Logger,
-        reporter_adapter: TradeReporter,
+        reporter_adapter: WebsocketAdapter,
         redis_adapter: RedisAdapter
     ):
         self.logger = logger

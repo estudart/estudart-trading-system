@@ -3,6 +3,7 @@ from .adapters import (
     BinanceMDAdapter,
     LoggerAdapter,
     MDAdapter,
+    WebsocketAdapter,
     CoinbaseDollarAdapter,
     FlowaTradeReporter
 )
