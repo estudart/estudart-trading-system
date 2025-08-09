@@ -2,25 +2,20 @@ import time
 import logging
 
 from src.application.data_collectors.data_collector import DataCollector
-from src.infrastructure.adapters.trade_reporter_adapter import TradeReporter
+from src.infrastructure.adapters.websocket_adapter import WebsocketAdapter
 from src.infrastructure.adapters.queue.redis_adapter import RedisAdapter
 
 
-class TradeDataCollector(DataCollector):
+class OrderReporter(DataCollector):
     def __init__(
         self,
         logger: logging.Logger,
-        reporter_adapter: TradeReporter,
+        reporter_adapter: WebsocketAdapter,
         redis_adapter: RedisAdapter
     ):
         self.logger = logger
         self.reporter_adapter = reporter_adapter
         self.redis_adapter = redis_adapter
-
-    def dispatch_trade_report_event(self, message_data: dict):
-        channel = f"trade-{message_data['StrategyID']}"
-        self.redis_adapter.publish_message(channel, message_data)
-        self.logger.info(f"{channel} | Trade report event was dispatched: {message_data}")
 
     def dispatch_order_report_event(self, processed_message_data: dict):
         channel = f"order-{processed_message_data['StrategyId']}"

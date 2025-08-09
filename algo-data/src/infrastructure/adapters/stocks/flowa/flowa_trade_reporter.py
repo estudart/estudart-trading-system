@@ -7,7 +7,7 @@ import websocket
 import msgpack
 from dotenv import load_dotenv
 
-from src.infrastructure.adapters.trade_reporter_adapter import TradeReporter
+from src.infrastructure.adapters.websocket_adapter import WebsocketAdapter
 from src.infrastructure.adapters.logger_adapter import LoggerAdapter
 
 load_dotenv()
@@ -15,7 +15,7 @@ load_dotenv()
 ENV = os.environ.get("ENV", "DEV")
 
 
-class FlowaTradeReporter(TradeReporter):
+class FlowaTradeReporter(WebsocketAdapter):
     def __init__(
             self,
             channel: str,
