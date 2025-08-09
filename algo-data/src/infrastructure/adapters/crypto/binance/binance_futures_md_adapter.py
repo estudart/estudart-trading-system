@@ -23,11 +23,14 @@ class BinanceCoinMWebsocketAdapter(WebsocketAdapter):
         self.streams: list = json.loads(os.environ.get(f'BINANCE_COINM_STREAMS_{ENV}'))
         self.host: str = os.environ.get(f'BINANCE_COINM_WSS_HOST_{ENV}')
         self.on_event: Callable = None
+        self.provider = "Binance"
 
     def on_message(self, ws: websocket.WebSocketApp, message):
         try:
             message_json = json.loads(message)
-            self.on_event("market-data", message_json)
+            asset = message_json["data"]["s"]
+            price = message_json["data"]["p"]
+            self.on_event(self.provider, asset, float(price))
             self.logger.info(f"Data was streamed: {message_json}")
         except Exception as err:
             self.logger.error(f"Binance Coin-M: Could not process message, reason: {err}")
