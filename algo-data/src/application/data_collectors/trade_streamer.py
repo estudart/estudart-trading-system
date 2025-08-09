@@ -6,31 +6,28 @@ from src.infrastructure.adapters.websocket_adapter import WebsocketAdapter
 from src.infrastructure.adapters.queue.redis_adapter import RedisAdapter
 
 
-class TradeDataCollector(DataCollector):
+class TradeStreamer(DataCollector):
     def __init__(
         self,
         logger: logging.Logger,
         reporter_adapter: WebsocketAdapter,
-        redis_adapter: RedisAdapter
+        redis_adapter: RedisAdapter,
+        provider: str
     ):
         self.logger = logger
         self.reporter_adapter = reporter_adapter
         self.redis_adapter = redis_adapter
+        self.provider = provider
 
     def dispatch_trade_report_event(self, message_data: dict):
-        channel = f"trade-{message_data['StrategyID']}"
-        self.redis_adapter.publish_message(channel, message_data)
-        self.logger.info(f"{channel} | Trade report event was dispatched: {message_data}")
-
-    def dispatch_order_report_event(self, processed_message_data: dict):
-        channel = f"order-{processed_message_data['StrategyId']}"
-        self.redis_adapter.publish_message(channel, processed_message_data)
-        self.logger.info(f"{channel} | Order report event was dispatched: {processed_message_data}")
+        channel = f"{self.provider}-trade-{message_data['StrategyID']}"
+        self.redis_adapter.stream_data(channel, message_data)
+        self.logger.info(f"{channel} | Trade was streammed: {message_data}")
 
     def start_collecting(self):
         while True:
             try:
-                ws = self.reporter_adapter.get_ws(self.dispatch_order_report_event)
+                ws = self.reporter_adapter.get_ws(self.dispatch_trade_report_event)
                 ws.run_forever()
             except Exception:
                 self.logger.info("WebSocket disconnected. Reconnecting in 5 seconds...")
