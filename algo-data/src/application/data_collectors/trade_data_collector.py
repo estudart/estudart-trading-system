@@ -22,24 +22,10 @@ class TradeDataCollector(DataCollector):
         self.redis_adapter.publish_message(channel, message_data)
         self.logger.info(f"{channel} | Trade report event was dispatched: {message_data}")
 
-    def dispatch_order_report_event(self, message_data: dict):
-        channel = f"order-{message_data['StrategyId']}"
-        processed_message_data = self.process_order_message_data(message_data)
+    def dispatch_order_report_event(self, processed_message_data: dict):
+        channel = f"order-{processed_message_data['StrategyId']}"
         self.redis_adapter.publish_message(channel, processed_message_data)
         self.logger.info(f"{channel} | Order report event was dispatched: {processed_message_data}")
-
-    def process_order_message_data(self, message_data: dict):
-        return {
-            "order_id": message_data["StrategyId"],
-            "symbol": message_data["Symbol"],
-            "side": message_data["Side"],
-            "quantity": message_data["Quantity"],
-            "price": message_data["Price"],
-            "order_type": message_data["OrderType"],
-            "exec_qty": message_data["ExecutedQuantity"],
-            "time_in_force": message_data["TimeInForce"],
-            "status": message_data["Status"]
-        }
 
     def start_collecting(self):
         while True:

@@ -30,6 +30,19 @@ class FlowaTradeReporter(TradeReporter):
         self.channel = channel
         self.provider = "Flowa"
 
+    def process_order_message_data(self, msg_data: dict):
+        return {
+            "order_id": msg_data["StrategyId"],
+            "symbol": msg_data["Symbol"],
+            "side": msg_data["Side"],
+            "quantity": msg_data["Quantity"],
+            "price": msg_data["Price"],
+            "order_type": msg_data["OrderType"],
+            "exec_qty": msg_data["ExecutedQuantity"],
+            "time_in_force": msg_data["TimeInForce"],
+            "status": msg_data["Status"]
+        }
+
     def on_message(self, ws: websocket.WebSocketApp, message):
         if message == b'\xff':
             ws.send(b'1')
@@ -38,7 +51,8 @@ class FlowaTradeReporter(TradeReporter):
         try:
             msg_data = msgpack.unpackb(message)
             self.logger.info(f"{self.provider}-{self.channel} | Received: {msg_data}")
-            self.on_event(msg_data)
+            processed_msg = self.process_order_message_data(msg_data)
+            self.on_event(processed_msg)
         except Exception as err:
             self.logger.error(f"Error processing message: {err}")
 
