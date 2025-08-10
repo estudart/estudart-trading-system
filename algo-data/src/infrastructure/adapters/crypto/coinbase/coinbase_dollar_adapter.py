@@ -27,5 +27,5 @@ class CoinbaseDollarAdapter(MDAdapter):
         )
         price_data = response.json()
         price = round(float(price_data["data"]["rates"]["BRL"]), 4)
-        self.logger.info(f"New price fetched for {ticker}: {price}")
+        self.logger.debug(f"New price fetched for {ticker}: {price}")
         return price

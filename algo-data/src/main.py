@@ -4,8 +4,10 @@ from src.application.data_collectors import (
     InavDataCollector,
     OrderReporter,
     TradeStreamer,
-    MdDataCollector
+    MdDataCollector,
+    DollarCollector
 )
+from src.infrastructure.adapters.crypto.coinbase.coinbase_dollar_adapter import CoinbaseDollarAdapter
 from src.infrastructure.adapters.stocks.hashdex.hashdex_md_adapter import HashdexMDAdapter
 from src.infrastructure.adapters.stocks.flowa.flowa_trade_reporter import FlowaTradeReporter
 from src.infrastructure.adapters.crypto.binance.binance_futures_md_adapter import BinanceCoinMWebsocketAdapter
@@ -22,6 +24,14 @@ def start_inav_collector_process(logger):
         assets_list=["BITH11", "ETHE11", "SOLH11"]
     )
     inav_collector.run()
+
+def start_dollar_collector_process(logger):
+    dollar_collector = DollarCollector(
+        logger=logger,
+        redis_adapter=RedisAdapter(logger),
+        dollar_adapter=CoinbaseDollarAdapter(logger)
+    )
+    dollar_collector.run()
 
 def start_binance_md_collector(logger):
     binance_md_collector = MdDataCollector(
@@ -61,6 +71,7 @@ if __name__ == '__main__':
     logger = LoggerAdapter().get_logger()
 
     process_list: list[Process] = [
+        Process(target=start_dollar_collector_process, args=(logger, )),
         Process(target=start_inav_collector_process, args=(logger, )),
         Process(target=start_order_reporter_process, args=(logger, )),
         Process(target=start_binance_md_collector, args=(logger, )),

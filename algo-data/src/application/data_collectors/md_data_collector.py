@@ -45,9 +45,13 @@ class MdDataCollector(DataCollector):
     def stream_data(self, provider: str, asset: str, price: float):
         onshore = self.from_underlying_to_etf[asset]
         offshore = self.onshore_offshore_mapping[onshore]["offshore"]
+
         qty = self.inav_adapter.get_crypto_quantity_on_onshore_etf(onshore, offshore)
-        inav = qty * price
-        self.logger.info(f"New inav {provider} {asset}: {inav}")
+        dollar_price = float(self.message_broker.get_key("USD:BRL"))
+        inav = round(qty * price * dollar_price, 2)
+
+        self.logger.info(f"INAV | {provider}-{asset}: {inav}")
+
         channel = f"inav-{onshore}-{provider}"
         self.message_broker.publish_message(channel, inav)
 
@@ -57,8 +61,8 @@ class MdDataCollector(DataCollector):
         ws.run_forever()
     
     def start_collecting(self):
+        self.logger.info(f"Caching underlying quantity on ETFs...")
         for k, v in self.onshore_offshore_mapping.items():
-            self.logger.info(f"Caching underlying quantity on ETFs...")
             self.inav_adapter.get_crypto_quantity_on_onshore_etf(k, v["offshore"])
 
         while True:
