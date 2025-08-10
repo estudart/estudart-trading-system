@@ -50,7 +50,7 @@ class MdDataCollector(DataCollector):
         dollar_price = float(self.message_broker.get_key("USD:BRL"))
         inav = round(qty * price * dollar_price, 2)
 
-        self.logger.info(f"New inav {provider} {asset}: {inav}")
+        self.logger.info(f"INAV | {provider}-{asset}: {inav}")
 
         channel = f"inav-{onshore}-{provider}"
         self.message_broker.publish_message(channel, inav)
