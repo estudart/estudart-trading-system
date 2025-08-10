@@ -31,7 +31,7 @@ class BinanceCoinMWebsocketAdapter(WebsocketAdapter):
             asset = message_json["data"]["s"]
             price = message_json["data"]["p"]
             self.on_event(self.provider, asset, float(price))
-            self.logger.info(f"Data was streamed: {message_json}")
+            self.logger.debug(f"Data was streamed: {message_json}")
         except Exception as err:
             self.logger.error(f"Binance Coin-M: Could not process message, reason: {err}")
             
