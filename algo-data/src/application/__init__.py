@@ -3,5 +3,6 @@ from .data_collectors import (
     DataCollector,
     MdDataCollector,
     OrderReporter,
-    TradeStreamer
+    TradeStreamer,
+    DollarCollector
 )
