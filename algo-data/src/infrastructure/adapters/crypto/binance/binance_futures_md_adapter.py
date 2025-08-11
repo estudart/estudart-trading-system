@@ -23,7 +23,7 @@ class BinanceCoinMWebsocketAdapter(WebsocketAdapter):
         self.streams: list = json.loads(os.environ.get(f'BINANCE_COINM_STREAMS_{ENV}'))
         self.host: str = os.environ.get(f'BINANCE_COINM_WSS_HOST_{ENV}')
         self.on_event: Callable = None
-        self.provider = "Binance"
+        self.provider = "binance"
 
     def on_message(self, ws: websocket.WebSocketApp, message):
         try:

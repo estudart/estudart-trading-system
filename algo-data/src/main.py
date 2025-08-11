@@ -72,7 +72,6 @@ if __name__ == '__main__':
 
     process_list: list[Process] = [
         Process(target=start_dollar_collector_process, args=(logger, )),
-        Process(target=start_inav_collector_process, args=(logger, )),
         Process(target=start_order_reporter_process, args=(logger, )),
         Process(target=start_binance_md_collector, args=(logger, )),
     ]

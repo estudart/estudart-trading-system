@@ -165,7 +165,7 @@ class SpreadCryptoETFAdapter(BaseAlgorithm):
     def subscribe_to_inav_updates(self, symbol: str, order_id: str):
         def inav_callback(data):
             self.handle_inav_price_update(data, order_id)
-        self.message_service.subscribe(f"inav-{symbol}", inav_callback)
+        self.message_service.subscribe(f"inav-{symbol}-{ExchangeEnum.BINANCE.value}", inav_callback)
 
     def subscribe_to_order_updates(self, order_id: str):
         def order_callback(data):
