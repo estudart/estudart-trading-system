@@ -18,7 +18,7 @@ class OrderReporter(DataCollector):
         self.redis_adapter = redis_adapter
 
     def dispatch_order_report_event(self, processed_message_data: dict):
-        channel = f"order-{processed_message_data['StrategyId']}"
+        channel = f"order-{processed_message_data['order_id']}"
         self.redis_adapter.publish_message(channel, processed_message_data)
         self.logger.info(f"{channel} | Order report event was dispatched: {processed_message_data}")
 
