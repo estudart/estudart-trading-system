@@ -12,17 +12,20 @@ class TradeRepositorySQLAlchemy(TradeRepository):
         self.session = session
 
     def save(self, trade: Trade) -> None:
-        trade_model = TradeModel(
-            trade_id=trade.trade_id,
-            order_id=trade.order_id,
-            symbol=trade.symbol,
-            side=trade.side,
-            quantity=trade.quantity,
-            price=trade.price,
-            trade_date=trade.trade_date
-        )
-        self.session.add(trade_model)
-        self.session.commit()
+        try:
+            trade_model = TradeModel(
+                trade_id=trade.trade_id,
+                order_id=trade.order_id,
+                symbol=trade.symbol,
+                side=trade.side,
+                quantity=trade.quantity,
+                price=trade.price,
+                trade_date=trade.trade_date
+            )
+            self.session.add(trade_model)
+            self.session.commit()
+        except Exception as err:
+            self.session.rollback()
 
     def get_by_id(self, trade_id: str) -> Optional[Trade]:
         model = self.session.query(TradeModel).filter_by(trade_id=trade_id).first()
