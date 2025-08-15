@@ -20,7 +20,7 @@ class TradeStreamer(DataCollector):
         self.provider = provider
 
     def dispatch_trade_report_event(self, message_data: dict):
-        channel = f"{self.provider}-trade-{message_data['StrategyID']}"
+        channel = f"{self.provider}-trades"
         self.redis_adapter.stream_data(channel, message_data)
         self.logger.info(f"{channel} | Trade was streammed: {message_data}")
 

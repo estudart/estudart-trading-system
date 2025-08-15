@@ -80,12 +80,17 @@ class RedisAdapter:
         self.redis_db.xadd(channel, data)
     
     def read_stream(self, channel: str, callback: Callable):
+        START_FROM_BEGINNING = "0-0"
+        last_entry = self.redis_db.xrevrange(channel, count=1)
+        last_id = last_entry[0][0] if last_entry else START_FROM_BEGINNING
         while True:
-            new_messages = self.redis_db.xread({channel: '$'}, block=5000)
+            new_messages = self.redis_db.xread({channel: last_id}, block=5000, count=100)
             if new_messages:
                 for stream_name, entries in new_messages:
                     for entry_id, data in entries:
-                        callback(entry_id, data)
+                        if entry_id != last_id:
+                            callback(entry_id, data)
+                            last_id = entry_id
     
     def insert_to_queue(self, message_data, queue):
         message_json = json.dumps(message_data, default=str)

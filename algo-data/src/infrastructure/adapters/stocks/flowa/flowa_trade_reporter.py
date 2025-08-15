@@ -2,6 +2,7 @@ from typing import Callable
 import logging
 import requests
 import os
+import json
 
 import websocket
 import msgpack
@@ -30,18 +31,29 @@ class FlowaTradeReporter(WebsocketAdapter):
         self.channel = channel
         self.provider = "Flowa"
 
-    def process_order_message_data(self, msg_data: dict):
-        return {
-            "order_id": msg_data["StrategyId"],
-            "symbol": msg_data["Symbol"],
-            "side": msg_data["Side"],
-            "quantity": msg_data["Quantity"],
-            "price": msg_data["Price"],
-            "order_type": msg_data["OrderType"],
-            "exec_qty": msg_data["ExecutedQuantity"],
-            "time_in_force": msg_data["TimeInForce"],
-            "status": msg_data["Status"]
-        }
+    def process_message_data(self, msg_data: dict):
+        if self.channel == "orders":
+            return {
+                "order_id": msg_data["StrategyId"],
+                "symbol": msg_data["Symbol"],
+                "side": msg_data["Side"],
+                "quantity": msg_data["Quantity"],
+                "price": msg_data["Price"],
+                "order_type": msg_data["OrderType"],
+                "exec_qty": msg_data["ExecutedQuantity"],
+                "time_in_force": msg_data["TimeInForce"],
+                "status": msg_data["Status"]
+            }
+        elif self.channel == "trades":
+            return {
+                "trade_id": f"{msg_data['StrategyID']}-{msg_data['Symbol']}-{msg_data['ExchangeTradeId']}",
+                "order_id": msg_data["StrategyID"],
+                "symbol": msg_data["Symbol"],
+                "side": msg_data["Side"],
+                "quantity": msg_data["Quantity"],
+                "price": msg_data["Price"],
+                "trade_date": msg_data["TradeDate"]
+            }
 
     def on_message(self, ws: websocket.WebSocketApp, message):
         if message == b'\xff':
@@ -50,8 +62,8 @@ class FlowaTradeReporter(WebsocketAdapter):
         
         try:
             msg_data = msgpack.unpackb(message)
-            self.logger.info(f"{self.provider}-{self.channel} | Received: {msg_data}")
-            processed_msg = self.process_order_message_data(msg_data)
+            self.logger.debug(f"{self.provider}-{self.channel} | Received: {msg_data}")
+            processed_msg = self.process_message_data(msg_data)
             self.on_event(processed_msg)
         except Exception as err:
             self.logger.error(f"Error processing message: {err}")
