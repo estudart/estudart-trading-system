@@ -6,3 +6,7 @@ from .data_collectors import (
     TradeStreamer,
     DollarCollector
 )
+from .data_consumers import (
+    DataConsumer,
+    FlowaDataConsumer
+)
