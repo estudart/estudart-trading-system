@@ -1,4 +1,5 @@
 from multiprocessing import Process
+import time
 
 from src.application.data_collectors import (
     InavDataCollector,
@@ -7,12 +8,18 @@ from src.application.data_collectors import (
     MdDataCollector,
     DollarCollector
 )
+from src.application.data_consumers import (
+    DataConsumer,
+    FlowaDataConsumer
+)
 from src.infrastructure.adapters.crypto.coinbase.coinbase_dollar_adapter import CoinbaseDollarAdapter
 from src.infrastructure.adapters.stocks.hashdex.hashdex_md_adapter import HashdexMDAdapter
 from src.infrastructure.adapters.stocks.flowa.flowa_trade_reporter import FlowaTradeReporter
 from src.infrastructure.adapters.crypto.binance.binance_futures_md_adapter import BinanceCoinMWebsocketAdapter
 from src.infrastructure.adapters.logger_adapter import LoggerAdapter
 from src.infrastructure.adapters.queue.redis_adapter import RedisAdapter
+from src.infrastructure.persistence.trade_repository_sqlalchemy import TradeRepositorySQLAlchemy
+from src.infrastructure.persistence.base import Base, engine, SessionLocal
 
 
 
@@ -66,11 +73,26 @@ def start_trade_streamer_process(logger):
     )
     trade_streamer.run()
 
+def start_trade_consumer_process(logger):
+    trade_consumer = FlowaDataConsumer(
+        logger=logger,
+        message_boker=RedisAdapter(
+            logger=logger
+        ),
+        trade_repository=TradeRepositorySQLAlchemy(
+            session=SessionLocal()
+        )
+    )
+    trade_consumer.run()
+
 
 if __name__ == '__main__':
+    Base.metadata.create_all(bind=engine)
     logger = LoggerAdapter().get_logger()
 
     process_list: list[Process] = [
+        Process(target=start_trade_consumer_process, args=(logger, )),
+        Process(target=start_trade_streamer_process, args=(logger, )),
         Process(target=start_dollar_collector_process, args=(logger, )),
         Process(target=start_order_reporter_process, args=(logger, )),
         Process(target=start_binance_md_collector, args=(logger, )),
@@ -79,6 +101,7 @@ if __name__ == '__main__':
     try:
         for p in process_list:
             p.start()
+            time.sleep(5)
     except KeyboardInterrupt:
         print("KeyboardInterrupt received. Terminating child processes...")
 
